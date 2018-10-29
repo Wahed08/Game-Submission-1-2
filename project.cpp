@@ -2,6 +2,7 @@
 #include<SFML/Audio.hpp>
 #include<windows.h>
 #include<iostream>
+#include<bits/stdc++.h>
 
 using namespace std;
 using namespace sf;
@@ -10,6 +11,7 @@ using namespace sf;
 int main(int argc,char **argv)
 {
     float playermovementspeed=50;
+    int score=0;
 
     RenderWindow window(VideoMode(800,480),"My project");
     window.setFramerateLimit(30);
@@ -18,7 +20,23 @@ int main(int argc,char **argv)
     Texture spritesheet;
     Texture fruiti;
 
-    fruiti.loadFromFile("image/Untitled.png");
+    Clock clock;
+
+    ///score system///
+    Font font;
+    font.loadFromFile("BELL.ttf");
+    ostringstream ssScore;
+    ssScore << "score "<< score;
+
+    Text lblscore;
+    lblscore.setCharacterSize(40);
+    lblscore.setFillColor(::Color::Red);
+    lblscore.setPosition(0,0);
+    lblscore.setFont(font);
+    lblscore.setString(ssScore.str());
+
+    ///image system///
+    fruiti.loadFromFile("image/frutika.png");
 
     spritesheet.loadFromFile("image/monster-fox.png");
 
@@ -28,14 +46,17 @@ int main(int argc,char **argv)
         system("pause");
     }
 
+    ///Sprite system///
     Sprite sprite(texture);
     Sprite sprite2(texture);
-//    Sprite sprite[2];
-//    for(int i=0; i<10; i++) fruit[i].setTexture(fruitTexture);
+
     sprite2.setPosition(-1024,0);
     Sprite sheet(spritesheet);
     Sprite fruitsheet(fruiti);
-    fruitsheet.setTextureRect(sf::IntRect(88, 0, 42, 42));
+    Sprite frutika(fruiti);
+    Sprite frutika2(fruiti);
+    Sprite frutika3(fruiti);
+    Sprite frutika4(fruiti);
 
     for(int i=0; i<60; i++)
     {
@@ -45,6 +66,7 @@ int main(int argc,char **argv)
         fruitsheet.setPosition(window.getSize().x,window.getSize().y);
     }
 
+    ///main loop///
     while(window.isOpen())
     {
         while(window.pollEvent(event))
@@ -67,7 +89,8 @@ int main(int argc,char **argv)
             if(Keyboard::isKeyPressed(Keyboard::Right))
             {
                 sheet.move(playermovementspeed,0);
-                sheet.setTextureRect(sf::IntRect(0, 42*2, 42, 42));            }
+                sheet.setTextureRect(sf::IntRect(0, 42*2, 42, 42));
+            }
 
             if(Keyboard::isKeyPressed(Keyboard::Left))
             {
@@ -76,20 +99,81 @@ int main(int argc,char **argv)
             }
 
         }
+        ///sprite move///
 
         sprite.move(7, 0);
         sprite2.move(7, 0);
 
-        if(sprite.getPosition().x>800) sprite.setPosition(-1024, 0);
-        if(sprite2.getPosition().x>800) sprite2.setPosition(-1024, 0);
+        frutika.move(7, 0);
+        frutika2.move(7, 0);
+         frutika3.move(7, 0);
+        frutika4.move(7, 0);
 
-        if(sheet.getPosition().y < 400) sheet.move(0, 10);
+
+        if(sprite.getPosition().x>800)
+            sprite.setPosition(-1024, 0);
+        if(sprite2.getPosition().x>800)
+            sprite2.setPosition(-1024, 0);
+
+            if(frutika.getPosition().x>800)
+            frutika.setPosition(-1024, 0);
+        if(frutika2.getPosition().x>800)
+            frutika2.setPosition(-1024, 0);
+
+             if(frutika3.getPosition().x>800)
+            frutika3.setPosition(-1024, 0);
+        if(frutika4.getPosition().x>800)
+            frutika4.setPosition(-1024, 0);
+
+
+    ///gravity variables///
+        if(sheet.getPosition().y < 400)
+            sheet.move(0, 10);
+            ///
+
+        if(frutika.getPosition().x<800)
+        {
+            frutika.move(5,0);
+            frutika.setTextureRect(sf::IntRect(42, 42, 42, 42));
+        }
+        if(frutika2.getPosition().x<100)
+        {
+            frutika2.move(5,0);
+            frutika2.setTextureRect(sf::IntRect(10, 10, 42, 42));
+        }
+         if(frutika3.getPosition().x<800)
+        {
+            frutika3.move(5,0);
+            frutika3.setTextureRect(sf::IntRect(0, 0, 0, 0));
+        }
+         if(frutika4.getPosition().x<100)
+        {
+            frutika4.move(5,0);
+            frutika4.setTextureRect(sf::IntRect(0, 0, 0, 0));
+        }
+
+       ///fruit logic///
+
+    if(clock.getElapsedTime().asSeconds()>1.0f){
+        if(frutika.Left==42)
+            frutika.Left=0;
+    }
+    else
+        frutika.Left+=21;
+    clock.restart();
+
+        ///draw///
 
         window.clear();
         window.draw(sprite);
         window.draw(sprite2);
         window.draw(sheet);
         window.draw(fruitsheet);
+        window.draw(frutika);
+        window.draw(frutika2);
+        window.draw(frutika3);
+        window.draw(frutika4);
+        window.draw(lblscore);
         window.display();
 
     }
